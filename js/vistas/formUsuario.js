@@ -9,14 +9,15 @@ function onSubmitUsuario(e) {
     const userName = e.target.value;
 
     if (validateEmail(userName)) {
-        if (hasUsuarioCookie(userName)) {
-            console.log("Usuario existente");
-            alert(`Bienvenido, ${userName}. Tu última conexión fue el ${getUsuarioCookie(userName).last_login}`);
-        } else {
+        if (!hasUsuarioCookie(userName)) {
             console.log("Nuevo usuario");
             addUsuarioCookie(userName);
-            alert(`Bienvenido, ${userName}. Tu última conexión fue el ${getUsuarioCookie(userName).last_login}`);
+        } else {
+            console.log("Usuario existente");
         }
+        
+        sessionStorage.setItem('user', userName);
+        window.location.href = 'pantalla2.html';
         
     } else {
         alert("Correo no válido");

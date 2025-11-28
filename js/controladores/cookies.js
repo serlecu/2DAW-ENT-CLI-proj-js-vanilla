@@ -58,7 +58,7 @@ export function getUsuarioCookie(username) {
 }
 
 export function updateUsuarioCookie(username, atributos = {}) {
-    let data = getCookie(username);
+    let data = JSON.parse(getCookie(username));
     data = { ...data, ...atributos };
     setCookie(username, JSON.stringify(data), 7); 
 }
