@@ -1,11 +1,23 @@
 import { textField } from "./simple/formFields.js";
 import { validateEmail } from "../controladores/validaciones.js";
+import { hasUsuarioCookie,
+        getUsuarioCookie,
+        addUsuarioCookie } from "../controladores/cookies.js";
 
 function onSubmitUsuario(e) {
     console.log(`Usuario: ${e.target.value}`);
+    const userName = e.target.value;
 
-    if (validateEmail(e.target.value)) {
-        // crear o cargar usuario desde cookies
+    if (validateEmail(userName)) {
+        if (hasUsuarioCookie(userName)) {
+            console.log("Usuario existente");
+            alert(`Bienvenido, ${userName}. Tu última conexión fue el ${getUsuarioCookie(userName).last_login}`);
+        } else {
+            console.log("Nuevo usuario");
+            addUsuarioCookie(userName);
+            alert(`Bienvenido, ${userName}. Tu última conexión fue el ${getUsuarioCookie(userName).last_login}`);
+        }
+        
     } else {
         alert("Correo no válido");
         e.target.select();
