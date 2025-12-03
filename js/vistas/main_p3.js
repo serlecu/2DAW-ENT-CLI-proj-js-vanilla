@@ -1,4 +1,4 @@
-import { renderFormPregunta } from './formPregunta.js';
+import { FormPregunta } from './formPregunta.js';
 import { ListaPreguntas } from './listaPreguntas.js';
 import { getPreguntasCookie } from '../controladores/cookies.js';
 
@@ -17,18 +17,16 @@ function loadPreguntasFromCookie(user, conRetraso = false) {
 
 function main() {
     console.log('Pantalla 3');
-    console.log(sessionStorage);
     const user = sessionStorage.getItem('user');
 
     const contForm = document.getElementById('container_form');
-    renderFormPregunta(contForm);
-
     const contLista = document.getElementById('container_lista');
+    
     const tablaPreguntas = new ListaPreguntas(contLista);
+    const formPregunta = new FormPregunta(contForm, tablaPreguntas);
 
     loadPreguntasFromCookie(user, true)
         .then((preguntas) => {
-            console.log('Añadiendo preguntas a la tabla desde la cookie');
             tablaPreguntas.addPreguntas(preguntas);
         })
         .catch((error) => {

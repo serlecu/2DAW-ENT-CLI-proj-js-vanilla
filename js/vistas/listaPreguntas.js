@@ -63,6 +63,10 @@ export class ListaPreguntas {
         this.render();
     }
 
+    hasCola() {
+        return this.cola.size > 0 ? true : false;
+    }
+
     appendErrores(id) {
         this.errores.add(id);
         this.render();
