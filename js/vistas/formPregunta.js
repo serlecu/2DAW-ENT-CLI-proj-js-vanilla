@@ -3,8 +3,12 @@ import {
     intField,
     radioField,
     formActions } from "./simple/formFields.js";
+import { 
+    getUsuarioCookie,
+    addPreguntaCookie } from "../controladores/cookies.js";
 
 function onSubmitPregunta() {
+    const username = sessionStorage.getItem('user');
     const preguntaValor = document.getElementById('pregunta').value;
     const respuestas = [...document.getElementsByName('respuesta')];
     let respuestaValor = null;
@@ -15,9 +19,17 @@ function onSubmitPregunta() {
         }
     }
     const puntuacionValor = document.getElementById('puntuacion').value;
-    console.log(
-        `Pregunta: ${preguntaValor}, Respuesta: ${respuestaValor}, Puntuación: ${puntuacionValor}`
-    );
+
+    addPreguntaCookie(
+        username,
+        {
+            pregunta: preguntaValor,
+            respuesta: respuestaValor,
+            puntuacion: parseInt(puntuacionValor),
+        }
+    )
+
+    console.log(getUsuarioCookie(username));
 }
 
 function onAtrasClick() {

@@ -66,3 +66,13 @@ export function updateUsuarioCookie(username, atributos = {}) {
 export function hasUsuarioCookie(username) {
     return getCookie(username) === null ? false : true;
 }
+
+export function addPreguntaCookie(username, preguntaObj) {
+    let user = getUsuarioCookie(username);
+    console.log(user);
+    if (!user.preguntas) {
+        user.preguntas = [];
+    }
+    user.preguntas.push(preguntaObj);
+    updateUsuarioCookie(username, { preguntas: user.preguntas });
+}
