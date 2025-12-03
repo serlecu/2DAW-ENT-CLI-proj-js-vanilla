@@ -20,14 +20,10 @@ function deleteCookie(cname) {
 }
 
 const defUsuarioCookie =  {
-    // id: 1,
-    username: "john_doe",
+    username: "",
     created_at: null,
     last_login: null,
-    preferences: {
-        theme: "dark",
-        language: "en",
-    },
+    preguntas: []
 };
 
 export function addUsuarioCookie(username) {
@@ -68,11 +64,12 @@ export function hasUsuarioCookie(username) {
 }
 
 export function addPreguntaCookie(username, preguntaObj) {
-    let user = getUsuarioCookie(username);
-    console.log(user);
-    if (!user.preguntas) {
-        user.preguntas = [];
-    }
-    user.preguntas.push(preguntaObj);
-    updateUsuarioCookie(username, { preguntas: user.preguntas });
+    let data = JSON.parse(getCookie(username));
+    data.preguntas.push(preguntaObj);
+    updateUsuarioCookie(username, { preguntas: data.preguntas });
+}
+
+export function getPreguntasCookie(username) {
+    let data = JSON.parse(getCookie(username));
+    return data.preguntas || [];
 }

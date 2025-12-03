@@ -4,11 +4,11 @@ import {
     radioField,
     formActions } from "./simple/formFields.js";
 import { 
-    getUsuarioCookie,
     addPreguntaCookie } from "../controladores/cookies.js";
 
 function onSubmitPregunta() {
     const username = sessionStorage.getItem('user');
+    const preguntaId = Date.now();
     const preguntaValor = document.getElementById('pregunta').value;
     const respuestas = [...document.getElementsByName('respuesta')];
     let respuestaValor = null;
@@ -20,16 +20,31 @@ function onSubmitPregunta() {
     }
     const puntuacionValor = document.getElementById('puntuacion').value;
 
-    addPreguntaCookie(
-        username,
-        {
-            pregunta: preguntaValor,
-            respuesta: respuestaValor,
-            puntuacion: parseInt(puntuacionValor),
-        }
-    )
+    const pregunta = {
+        id: preguntaId,
+        pregunta: preguntaValor,
+        respuesta: respuestaValor,
+        puntuacion: parseInt(puntuacionValor),
+    };
+    
+    addPreguntaCookie(username, pregunta);
 
-    console.log(getUsuarioCookie(username));
+    // Eventos para la tabla
+    const eventoPregunta = new CustomEvent('addPregunta', {
+        detail: { pregunta: pregunta }
+    });
+    const eventoCola = new CustomEvent('addCola', {
+        detail: { preguntaId: preguntaId }
+    });
+    const eventoRemoveCola = new CustomEvent('removeCola', {
+        detail: { preguntaId: preguntaId }
+    });
+    const contLista = document.getElementById('container_lista');
+    contLista.dispatchEvent(eventoCola);
+    contLista.dispatchEvent(eventoPregunta);
+    setTimeout(() => {;
+        contLista.dispatchEvent(eventoRemoveCola);
+    }, 5000);
 }
 
 function onAtrasClick() {
