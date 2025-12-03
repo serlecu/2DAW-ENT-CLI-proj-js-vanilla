@@ -5,19 +5,18 @@ export function createTabla(header, data) {
 
     // Crear encabezado
     let filaHeader = document.createElement('tr');
-    header.forEach(col => {
+    header.forEach((col) => {
         let th = document.createElement('th');
         th.textContent = col;
         filaHeader.appendChild(th);
     });
     thead.appendChild(filaHeader);
-    tabla.appendChild(thead);   
+    tabla.appendChild(thead);
 
     // Crear filas de datos
-    console.log(data);
-    data.forEach(row => {
+    data.forEach((row) => {
         let fila = document.createElement('tr');
-        row.forEach(cell => {
+        row.forEach((cell) => {
             let td = document.createElement('td');
             td.textContent = cell;
             fila.appendChild(td);

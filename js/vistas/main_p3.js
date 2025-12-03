@@ -1,37 +1,42 @@
-import { renderFormPregunta } from "./formPregunta.js";
-import { ListaPreguntas } from "./listaPreguntas.js";
-import { getPreguntasCookie } from "../controladores/cookies.js";
-// import { renderListaPreguntas } from "./listaPreguntas.js";
+import { renderFormPregunta } from './formPregunta.js';
+import { ListaPreguntas } from './listaPreguntas.js';
+import { getPreguntasCookie } from '../controladores/cookies.js';
+
+function loadPreguntasFromCookie(user, conRetraso = false) {
+    return new Promise((resolve) => {
+        const preguntas = getPreguntasCookie(user);
+        if (conRetraso) {
+            setTimeout(() => {
+                resolve(preguntas);
+            }, 5000);
+        } else {
+            resolve(preguntas);
+        }
+    });
+}
 
 function main() {
-    console.log("Pantalla 3");
+    console.log('Pantalla 3');
     console.log(sessionStorage);
     const user = sessionStorage.getItem('user');
 
-    const contForm = document.getElementById("container_form");
+    const contForm = document.getElementById('container_form');
     renderFormPregunta(contForm);
 
-    const contLista = document.getElementById("container_lista");
+    const contLista = document.getElementById('container_lista');
     const tablaPreguntas = new ListaPreguntas(contLista);
-    tablaPreguntas.addPreguntas(getPreguntasCookie(user));
 
-    contLista.addEventListener('addPregunta', (e) => {
-        console.log(e);
-        tablaPreguntas.addPregunta(e.detail.pregunta);
-    });
-    contLista.addEventListener('addCola', (e) => {
-        tablaPreguntas.appendCola(e.detail.preguntaId);
-        // tras 5 secundos, eliminar de la cola
-        setTimeout(() => {
-            const eventoRemoveCola = new CustomEvent('removeCola', {
-                detail: { id: e.detail.preguntaId }
-            });
-            contLista.dispatchEvent(eventoRemoveCola);
-        }, 5000);
-    });
-    contLista.addEventListener('removeCola', (e) => {
-        tablaPreguntas.removeCola(e.detail.preguntaId);
-    });
+    loadPreguntasFromCookie(user, true)
+        .then((preguntas) => {
+            console.log('Añadiendo preguntas a la tabla desde la cookie');
+            tablaPreguntas.addPreguntas(preguntas);
+        })
+        .catch((error) => {
+            console.error(
+                'Error al cargar las preguntas desde la cookie:',
+                error
+            );
+        });
 }
 
 document.addEventListener('DOMContentLoaded', main);

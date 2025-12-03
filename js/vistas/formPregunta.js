@@ -1,10 +1,10 @@
-import { 
+import {
     textField,
     intField,
     radioField,
-    formActions } from "./simple/formFields.js";
-import { 
-    addPreguntaCookie } from "../controladores/cookies.js";
+    formActions,
+} from './simple/formFields.js';
+import { addPreguntaCookie } from '../controladores/cookies.js';
 
 function onSubmitPregunta() {
     const username = sessionStorage.getItem('user');
@@ -26,25 +26,40 @@ function onSubmitPregunta() {
         respuesta: respuestaValor,
         puntuacion: parseInt(puntuacionValor),
     };
-    
-    addPreguntaCookie(username, pregunta);
 
     // Eventos para la tabla
     const eventoPregunta = new CustomEvent('addPregunta', {
-        detail: { pregunta: pregunta }
+        detail: { pregunta: pregunta },
     });
     const eventoCola = new CustomEvent('addCola', {
-        detail: { preguntaId: preguntaId }
+        detail: { preguntaId: preguntaId },
     });
     const eventoRemoveCola = new CustomEvent('removeCola', {
-        detail: { preguntaId: preguntaId }
+        detail: { preguntaId: preguntaId },
     });
+    const eventoErrores = new CustomEvent('addErrores', {
+        detail: { preguntaId: preguntaId },
+    });
+
     const contLista = document.getElementById('container_lista');
     contLista.dispatchEvent(eventoCola);
     contLista.dispatchEvent(eventoPregunta);
-    setTimeout(() => {;
-        contLista.dispatchEvent(eventoRemoveCola);
-    }, 5000);
+    let promise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            // reject("Error simulado");
+            resolve();
+        }, 5000);
+    });
+    promise
+        .then(() => {
+            contLista.dispatchEvent(eventoRemoveCola);
+            addPreguntaCookie(username, pregunta);
+        })
+        .catch((error) => {
+            contLista.dispatchEvent(eventoRemoveCola);
+            contLista.dispatchEvent(eventoErrores);
+            console.error('Error al guardar la pregunta:', error);
+        });
 }
 
 function onAtrasClick() {
